@@ -1,6 +1,3 @@
-#.idea
-.idea/
-
 #Cmake
 CMakeLists.txt.user
 CMakeCache.txt
@@ -14,4 +11,3 @@ compile_commands.json
 CTestTestfile.cmake
 _deps
 cmake-build-debug
-**.cbp
