@@ -5,7 +5,7 @@
 
 namespace xcalc {
 
-    std::string evaluate(std::string input);
+    std::string evaluate(const std::string& input);
 
 } // namespace xcalc
 
