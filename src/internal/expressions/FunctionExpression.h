@@ -4,6 +4,7 @@
 #include <string>
 
 #include "Expression.h"
+#include "../../public/include/DegreeMode.h"
 
 namespace xcalc_internal {
 
@@ -14,7 +15,7 @@ namespace xcalc_internal {
  */
 class FunctionExpression: public Expression {
   public:
-    FunctionExpression(std::string identifier, Expression* innerExpression);
+    FunctionExpression(xcalc::DegreeMode degreeMode, std::string identifier, Expression* innerExpression);
     ~FunctionExpression() override = default;
 
     double evaluate() override;
@@ -22,6 +23,7 @@ class FunctionExpression: public Expression {
   private:
     std::string _identifier;
     Expression* _innerExpression;
+    xcalc::DegreeMode _degreeMode;
 };
 
 }

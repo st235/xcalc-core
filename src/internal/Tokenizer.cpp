@@ -2,7 +2,6 @@
 
 #include "expressions/DecimalExpression.h"
 #include "expressions/VariableExpression.h"
-#include "expressions/FunctionExpression.h"
 
 namespace xcalc_internal {
 
@@ -34,7 +33,12 @@ Expression* Tokenizer::decimal() {
 
 Expression* Tokenizer::variable() {
     this->ignoreWhiteSpaces();
-    std::string variable = extractSymbols();
+
+    if (!startsWithIdentifier()) {
+        return nullptr;
+    }
+
+    std::string variable = extractIdentifier();
 
     if (variable.length() <= 0) {
         return nullptr;
@@ -43,12 +47,18 @@ Expression* Tokenizer::variable() {
     return new VariableExpression(variable);
 }
 
-std::string Tokenizer::extractSymbols() {
+bool Tokenizer::startsWithIdentifier() {
+    this->ignoreWhiteSpaces();
+    char current = _stream.peek();
+    return std::isalpha(current);
+}
+
+std::string Tokenizer::extractIdentifier() {
     this->ignoreWhiteSpaces();
     std::string result;
     char current = _stream.peek();
 
-    while (std::isalpha(current)) {
+    while (std::isalpha(current) || std::isdigit(current)) {
         char c = _stream.get();
         result += c;
         current = _stream.peek();

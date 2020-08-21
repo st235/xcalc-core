@@ -4,7 +4,7 @@ if(APPLE)
     set(CMAKE_SHARED_LIBRARY_SUFFIX ".so")
 endif(APPLE)
 
-set(PUBLIC_SOURCES ./public/xcalc.cpp ./public/include/xcalc.h)
+set(PUBLIC_SOURCES ./public/xcalc.cpp ./public/include/xcalc.h public/include/DegreeMode.h)
 set(INTERNAL_SOURCES ./internal/Tokenizer.cpp ./internal/Tokenizer.h
                      internal/Parser.cpp internal/Parser.h
                      internal/terms/Terms.h
@@ -17,7 +17,8 @@ set(INTERNAL_SOURCES ./internal/Tokenizer.cpp ./internal/Tokenizer.h
                      internal/constants/ConstantsProvider.cpp internal/constants/ConstantsProvider.h
                      internal/operators/OperatorsProvider.cpp internal/operators/OperatorsProvider.h
                      internal/functions/FunctionsProvider.cpp internal/functions/FunctionsProvider.h
-)
+                     internal/utils/Formatter.h
+                     internal/utils/AngleUnitsProvider.cpp internal/utils/AngleUnitsProvider.h)
 
 add_library(${XCALC_LIB} SHARED ${PUBLIC_SOURCES} ${INTERNAL_SOURCES})
 target_include_directories(${XCALC_LIB} PUBLIC ${CMAKE_CURRENT_SOURCE_DIR}/public/include)

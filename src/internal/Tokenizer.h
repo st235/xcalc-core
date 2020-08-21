@@ -16,8 +16,10 @@ class Tokenizer {
     Expression* variable();
 
     bool isExpectedCharacterNext(char expected);
-    std::string extractSymbols();
     void ignoreWhiteSpaces();
+
+    bool startsWithIdentifier();
+    std::string extractIdentifier();
 
     int getCurrentPosition();
     void restoreToPosition(int position);

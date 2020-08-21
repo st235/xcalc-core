@@ -9,7 +9,7 @@
 
 namespace xcalc_internal {
 
-Parser::Parser(const std::string& value) {
+Parser::Parser(const std::string& value, xcalc::DegreeMode degreeMode): _degreeMode(degreeMode) {
     _tokenizer = std::make_unique<Tokenizer>(value);
 }
 
@@ -137,7 +137,7 @@ Expression* Parser::term() {
     int start = _tokenizer->getCurrentPosition();
     Expression* expression = nullptr;
 
-    if (!(expression = group()) && !(expression = unary_operators())) {
+    if (!(expression = group()) && !(expression = prefix_unary()) && !(expression = suffix_unary())) {
         _tokenizer->restoreToPosition(start);
         delete expression;
         return nullptr;
@@ -161,26 +161,45 @@ Expression* Parser::group() {
     return expression;
 }
 
-Expression* Parser::unary_operators() {
+Expression* Parser::suffix_unary() {
+    int start = _tokenizer->getCurrentPosition();
+    Expression* expression = terminals();
+
+    if (expression) {
+        if (_tokenizer->isExpectedCharacterNext(Terms::OPERATOR_PERCENT)) {
+            return new UnaryExpression(Terms::OPERATOR_PERCENT, expression);
+        }
+
+        if (_tokenizer->isExpectedCharacterNext(Terms::OPERATOR_FACTORIAL)) {
+            return new UnaryExpression(Terms::OPERATOR_FACTORIAL, expression);
+        }
+    }
+
+    delete expression;
+    _tokenizer->restoreToPosition(start);
+    return nullptr;
+}
+
+Expression* Parser::prefix_unary() {
     int start = _tokenizer->getCurrentPosition();
     _tokenizer->ignoreWhiteSpaces();
     Expression* expression = nullptr;
 
-    if (_tokenizer->isExpectedCharacterNext(Terms::OPERATOR_PLUS) && (expression = terminals())) {
+    if (_tokenizer->isExpectedCharacterNext(Terms::OPERATOR_PLUS) && ((expression = suffix_unary()) || (expression = terminals()))) {
         return new UnaryExpression(Terms::OPERATOR_PLUS, expression);
     }
 
-    if (_tokenizer->isExpectedCharacterNext(Terms::OPERATOR_MINUS) && (expression = terminals())) {
+    if (_tokenizer->isExpectedCharacterNext(Terms::OPERATOR_MINUS) && ((expression = suffix_unary()) || (expression = terminals()))) {
         return new UnaryExpression(Terms::OPERATOR_MINUS, expression);
     }
 
-    if ((expression = terminals())) {
-        return new UnaryExpression(Terms::OPERATOR_EMPTY, expression);
+    if (!(expression = suffix_unary()) && !(expression = terminals())) {
+        _tokenizer->restoreToPosition(start);
+        delete expression;
+        return nullptr;
     }
 
-    _tokenizer->restoreToPosition(start);
-    delete expression;
-    return nullptr;
+    return new UnaryExpression(Terms::OPERATOR_EMPTY, expression);
 }
 
 Expression * Parser::terminals() {
@@ -200,7 +219,12 @@ Expression * Parser::terminals() {
 Expression* Parser::function() {
     int start = _tokenizer->getCurrentPosition();
 
-    std::string id = _tokenizer->extractSymbols();
+    if (!_tokenizer->startsWithIdentifier()) {
+        _tokenizer->restoreToPosition(start);
+        return nullptr;
+    }
+
+    std::string id = _tokenizer->extractIdentifier();
 
     if (id.empty()) {
         _tokenizer->restoreToPosition(start);
@@ -215,7 +239,7 @@ Expression* Parser::function() {
             _tokenizer->ignoreWhiteSpaces();
 
             if (_tokenizer->isExpectedCharacterNext(Terms::RIGHT_PARENTHESIS)) {
-                return new FunctionExpression(id, expression);
+                return new FunctionExpression(_degreeMode, id, expression);
             }
         }
     }

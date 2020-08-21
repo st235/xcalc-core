@@ -6,18 +6,20 @@
 
 #include "Tokenizer.h"
 #include "expressions/Expression.h"
+#include "../../public/include/DegreeMode.h"
 
 namespace xcalc_internal {
 
 class Parser {
 public:
-    explicit Parser(const std::string& value);
+    explicit Parser(const std::string& value, xcalc::DegreeMode degreeMode = xcalc::DegreeMode::RADS);
     ~Parser() = default;
 
     Expression* statement();
 
 private:
     std::unique_ptr<Tokenizer> _tokenizer;
+    xcalc::DegreeMode _degreeMode;
 
     Expression* calculation();
     Expression* sum();
@@ -26,7 +28,8 @@ private:
     Expression* power();
     Expression* term();
     Expression* group();
-    Expression* unary_operators();
+    Expression* suffix_unary();
+    Expression* prefix_unary();
     Expression* terminals();
     Expression* function();
 };

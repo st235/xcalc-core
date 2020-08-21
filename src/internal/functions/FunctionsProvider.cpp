@@ -4,12 +4,15 @@
 #include <algorithm>
 #include <cctype>
 #include <cmath>
+#include <stdexcept>
 
+#include "../utils/Formatter.h"
 #include "../terms/Terms.h"
+#include "../utils/AngleUnitsProvider.h"
 
 namespace xcalc_internal {
 
-double FunctionsProvider::evaluate(const std::string& identifier, double innerExpression) {
+double FunctionsProvider::evaluate(xcalc::DegreeMode degreeMode, const std::string& identifier, double innerExpression) {
     std::string lowercaseId = identifier;
 
     std::transform(lowercaseId.begin(), lowercaseId.end(), lowercaseId.begin(), [](unsigned char c) {
@@ -17,10 +20,38 @@ double FunctionsProvider::evaluate(const std::string& identifier, double innerEx
     });
 
     if (lowercaseId == Terms::FUNCTION_COS) {
-        return std::cos(innerExpression);
+        return std::cos(ConvertToRads(degreeMode, innerExpression));
     }
 
-    return 0.0;
+    if (lowercaseId == Terms::FUNCTION_SIN) {
+        return std::sin(ConvertToRads(degreeMode, innerExpression));
+    }
+
+    if (lowercaseId == Terms::FUNCTION_TAN) {
+        return std::tan(ConvertToRads(degreeMode, innerExpression));
+    }
+
+    if (lowercaseId == Terms::FUNCTION_LOG) {
+        return std::log(innerExpression);
+    }
+
+    if (lowercaseId == Terms::FUNCTION_LOG2) {
+        return std::log2(innerExpression);
+    }
+
+    if (lowercaseId == Terms::FUNCTION_LOG10) {
+        return std::log10(innerExpression);
+    }
+
+    if (lowercaseId == Terms::FUNCTION_SQRT) {
+        return std::sqrt(innerExpression);
+    }
+
+    if (lowercaseId == Terms::FUNCTION_EXP) {
+        return std::exp(innerExpression);
+    }
+
+    throw std::runtime_error(Formatter() << "error: cannot find function: " << identifier >> Formatter::end);
 }
 
 }

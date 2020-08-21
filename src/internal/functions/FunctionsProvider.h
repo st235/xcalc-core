@@ -3,6 +3,8 @@
 
 #include <memory>
 
+#include "../../public/include/DegreeMode.h"
+
 namespace xcalc_internal {
 
 class FunctionsProvider {
@@ -16,7 +18,7 @@ public:
     FunctionsProvider(FunctionsProvider const&) = delete;
     FunctionsProvider operator=(FunctionsProvider const&) = delete;
 
-    double evaluate(const std::string& identifier, double innerExpression);
+    double evaluate(xcalc::DegreeMode degreeMode, const std::string& identifier, double innerExpression);
 
 private:
     FunctionsProvider() = default;

@@ -4,7 +4,8 @@
 
 namespace xcalc_internal {
 
-FunctionExpression::FunctionExpression(std::string identifier, Expression* expression):
+FunctionExpression::FunctionExpression(xcalc::DegreeMode degreeMode, std::string identifier, Expression* expression):
+    _degreeMode(degreeMode),
     _identifier(std::move(identifier)),
     _innerExpression(expression) {
 }
@@ -15,7 +16,7 @@ double FunctionExpression::evaluate() {
     }
 
     double innerValue = _innerExpression->evaluate();
-    return FunctionsProvider::getInstance().evaluate(_identifier, innerValue);
+    return FunctionsProvider::getInstance().evaluate(_degreeMode, _identifier, innerValue);
 }
 
 }
