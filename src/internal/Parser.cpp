@@ -102,12 +102,28 @@ Expression*  Parser::product() {
     return lhs;
 }
 
+Expression* Parser::short_product() {
+    int start = _tokenizer->getCurrentPosition();
+
+    Expression* decimal = _tokenizer->decimal();
+    Expression* expression = nullptr;
+
+    if (decimal && (expression = terminals())) {
+        return new ArithmeticExpression(Terms::OPERATOR_MULTIPLICATION, decimal, expression);
+    }
+
+    delete decimal;
+    delete expression;
+    _tokenizer->restoreToPosition(start);
+    return nullptr;
+}
+
 Expression*  Parser::factor() {
     int start = _tokenizer->getCurrentPosition();
 
     Expression*  expression = nullptr;
 
-    if (!(expression = power()) && !(expression = term())) {
+    if (!(expression = short_product()) && !(expression = power()) && !(expression = term())) {
         _tokenizer->restoreToPosition(start);
         delete expression;
         return nullptr;
@@ -137,7 +153,7 @@ Expression* Parser::term() {
     int start = _tokenizer->getCurrentPosition();
     Expression* expression = nullptr;
 
-    if (!(expression = group()) && !(expression = prefix_unary()) && !(expression = suffix_unary())) {
+    if (!(expression = prefix_unary()) && !(expression = suffix_unary())) {
         _tokenizer->restoreToPosition(start);
         delete expression;
         return nullptr;
@@ -206,7 +222,7 @@ Expression * Parser::terminals() {
     int start = _tokenizer->getCurrentPosition();
     Expression* expression = nullptr;
 
-    if ((expression = function()) || (expression = _tokenizer->variable()) ||
+    if ((expression = group()) || (expression = function()) || (expression = _tokenizer->variable()) ||
             (expression = _tokenizer->decimal())) {
         return expression;
     }

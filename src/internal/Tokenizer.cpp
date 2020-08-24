@@ -22,12 +22,32 @@ Expression* Tokenizer::decimal() {
     this->ignoreWhiteSpaces();
     char current = _stream.peek();
 
-    if (!std::isdigit(current)) {
+    if (!std::isdigit(current) && current != '.') {
         return nullptr;
     }
 
+    bool wasDelimiter = false;
+    std::stringstream buffer;
+
+    if (current == '.') {
+        buffer << '0';
+    }
+
+    while (std::isdigit(current) || current == '.') {
+        if (current == '.') {
+            if (wasDelimiter) {
+                return nullptr;
+            }
+
+            wasDelimiter = true;
+        }
+
+        buffer << (char) _stream.get();
+        current = _stream.peek();
+    }
+
     double value;
-    _stream >> value;
+    buffer >> value;
     return new DecimalExpression(value);
 }
 

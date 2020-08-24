@@ -24,6 +24,7 @@ private:
     Expression* calculation();
     Expression* sum();
     Expression* product();
+    Expression* short_product();
     Expression* factor();
     Expression* power();
     Expression* term();
