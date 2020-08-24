@@ -18,7 +18,7 @@ set(INTERNAL_SOURCES ./internal/Tokenizer.cpp ./internal/Tokenizer.h
                      internal/operators/OperatorsProvider.cpp internal/operators/OperatorsProvider.h
                      internal/functions/FunctionsProvider.cpp internal/functions/FunctionsProvider.h
                      internal/utils/Formatter.h
-                     internal/utils/AngleUnitsProvider.cpp internal/utils/AngleUnitsProvider.h)
+                     internal/utils/AngleUnitsProvider.cpp internal/utils/AngleUnitsProvider.h internal/utils/EvaluationError.h internal/utils/EvaluationError.cpp)
 
 add_library(${XCALC_LIB} SHARED ${PUBLIC_SOURCES} ${INTERNAL_SOURCES})
 target_include_directories(${XCALC_LIB} PUBLIC ${CMAKE_CURRENT_SOURCE_DIR}/public/include)

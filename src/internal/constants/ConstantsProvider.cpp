@@ -4,6 +4,7 @@
 #include <algorithm>
 #include <cctype>
 
+#include "../utils/EvaluationError.h"
 #include "../utils/Formatter.h"
 #include "../terms/Terms.h"
 
@@ -24,7 +25,7 @@ double ConstantsProvider::resolve(const std::string& identifier) {
         return Terms::CONST_E_VALUE;
     }
 
-    throw std::runtime_error(Formatter() << "error: cannot find const with name " << identifier >> Formatter::end);
+    throw EvaluationError(EvaluationError::CONST_NOT_FOUND, Formatter() << "cannot find const with such name: "  << identifier >> Formatter::end);
 }
 
 }

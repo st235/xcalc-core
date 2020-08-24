@@ -7,6 +7,7 @@
 #include <stdexcept>
 
 #include "../utils/Formatter.h"
+#include "../utils/EvaluationError.h"
 #include "../terms/Terms.h"
 #include "../utils/AngleUnitsProvider.h"
 
@@ -51,7 +52,7 @@ double FunctionsProvider::evaluate(xcalc::DegreeMode degreeMode, const std::stri
         return std::exp(innerExpression);
     }
 
-    throw std::runtime_error(Formatter() << "error: cannot find function: " << identifier >> Formatter::end);
+    throw EvaluationError(EvaluationError::FUNCTION_NOT_FOUND, Formatter() << "cannot find function: " << identifier >> Formatter::end);
 }
 
 }

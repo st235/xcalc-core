@@ -18,22 +18,22 @@ class Formatter {
     template <typename Type>
     Formatter& operator<< (const Type& value)
     {
-        stream_ << value;
+        _stream << value;
         return *this;
     }
 
-    std::string operator>>(ToString) { return stream_.str(); }
+    std::string operator>>(ToString) { return _stream.str(); }
 
     std::string str() const {
-        return stream_.str();
+        return _stream.str();
     }
 
     explicit operator std::string() const {
-        return stream_.str();
+        return _stream.str();
     }
 
   private:
-    std::stringstream stream_;
+    std::stringstream _stream;
 };
 
 }

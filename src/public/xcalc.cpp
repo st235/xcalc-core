@@ -3,6 +3,7 @@
 #include <memory>
 
 #include "../internal/Parser.h"
+#include "../internal/utils/EvaluationError.h"
 
 namespace xcalc {
 
@@ -11,7 +12,7 @@ namespace xcalc {
 
         xcalc_internal::Expression* expression = expression = parser->statement();
         if (!expression) {
-            return "error";
+            return std::string(xcalc_internal::EvaluationError(xcalc_internal::EvaluationError::SYNTAX_ERROR, "syntax error").what());
         }
 
         try {
