@@ -15,18 +15,19 @@ short_product -> number terminal
 power -> term '^' factor
 term -> prefix_unary | suffix_unary
 terminals -> group | function | variable | number
-prefix_unary -> ('+'|'-'|'e') (suffix_unary | terminals)
+prefix_unary -> ('+'|'-')+ (suffix_unary | terminals)
 suffix_unary -> terminals ('!'|'%')
 group -> '(' sum ')'
 function -> variable '(' sum ')'
 
 number -> any decimal number with dot separator, also dot-first notation (ie '.9') acceptable 
-variable -> starts with one or multiple alphabetic character then zero or more numeral. regexp: ([a-z]|[A-Z])+([0-9])*
+variable -> starts with one or multiple alphabetic character then zero or more numeral. regexp: ([a-z]|[A-Z])([a-z]|[A-Z])*([0-9])*
 
 ---
 'character' - character literal
 |           - logical conjunction
 *           - Kleene operator
++           - zero or one repetition
 ```
 
 ### License
